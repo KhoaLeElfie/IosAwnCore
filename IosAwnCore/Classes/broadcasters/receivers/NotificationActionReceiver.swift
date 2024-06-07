@@ -26,8 +26,8 @@ public class NotificationActionReceiver {
     
 
     // ********************************************************    
-    func checkIfContentFromFreshChat(content: UNMutableNotificationContent) -> Bool {
-        if let value = content.userInfo["source"] as? String {
+    func checkIfContentFromFreshChat(userInfo: [AnyHashable : Any]) -> Bool {
+        if let value = userInfo["source"] as? String {
             return value == "freshchat_user"
         }
         return false
@@ -106,7 +106,7 @@ public class NotificationActionReceiver {
             }
             else{
                 if userInfo["gcm.message_id"] == nil {
-                    if !checkIfContentFromFreshChat(content: userInfo) {
+                    if !checkIfContentFromFreshChat(userInfo: userInfo) {
                         throw ExceptionFactory
                             .shared
                             .createNewAwesomeException(
