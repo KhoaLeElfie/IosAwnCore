@@ -3,6 +3,7 @@
 //  awesome_notifications
 //
 //  Created by CardaDev on 31/01/22.
+// ELFIE: Modifier to support custom handler
 //
 
 import Foundation
@@ -23,6 +24,16 @@ public class NotificationActionReceiver {
     }
     private init(){}
     
+
+    // ********************************************************    
+    func checkIfContentFromFreshChat(content: UNMutableNotificationContent) -> Bool {
+        if let value = content.userInfo["source"] as? String {
+            return value == "freshchat_user"
+        }
+        return false
+    }
+
+
     // ********************************************************
     
     public func addNewActionEvent(
@@ -95,13 +106,15 @@ public class NotificationActionReceiver {
             }
             else{
                 if userInfo["gcm.message_id"] == nil {
-                    throw ExceptionFactory
-                        .shared
-                        .createNewAwesomeException(
-                            className: TAG,
-                            code: ExceptionCode.CODE_INVALID_ARGUMENTS,
-                            message: "The action content doesn't contain any awesome information",
-                            detailedCode: ExceptionCode.DETAILED_INVALID_ARGUMENTS + ".addNewActionEvent.jsonData")
+                    if !checkIfContentFromFreshChat(content: userInfo) {
+                        throw ExceptionFactory
+                            .shared
+                            .createNewAwesomeException(
+                                className: TAG,
+                                code: ExceptionCode.CODE_INVALID_ARGUMENTS,
+                                message: "The action content doesn't contain any awesome information",
+                                detailedCode: ExceptionCode.DETAILED_INVALID_ARGUMENTS + ".addNewActionEvent.jsonData")
+                    }
                 }
                 
                 let title:String? = response.notification.request.content.title
