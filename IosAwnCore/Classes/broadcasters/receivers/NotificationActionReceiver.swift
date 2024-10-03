@@ -110,15 +110,15 @@ public class NotificationActionReceiver {
             }
             else{
                 if userInfo["gcm.message_id"] == nil {
-//                    if !checkIfContentFromFreshChat(userInfo: userInfo) {
-//                        throw ExceptionFactory
-//                            .shared
-//                            .createNewAwesomeException(
-//                                className: TAG,
-//                                code: ExceptionCode.CODE_INVALID_ARGUMENTS,
-//                                message: "The action content doesn't contain any awesome information",
-//                                detailedCode: ExceptionCode.DETAILED_INVALID_ARGUMENTS + ".addNewActionEvent.jsonData")
-//                    }
+                    if !checkIfContentFromFreshChat(userInfo: userInfo) {
+                        throw ExceptionFactory
+                            .shared
+                            .createNewAwesomeException(
+                                className: TAG,
+                                code: ExceptionCode.CODE_INVALID_ARGUMENTS,
+                                message: "The action content doesn't contain any awesome information",
+                                detailedCode: ExceptionCode.DETAILED_INVALID_ARGUMENTS + ".addNewActionEvent.jsonData")
+                    }
                 }
                 
                 let title:String? = response.notification.request.content.title
@@ -127,15 +127,8 @@ public class NotificationActionReceiver {
                 notificationModel = NotificationModel()
                 
                 notificationModel!.content = NotificationContentModel()
-                if(notificationId.isEmpty) {
-                    notificationModel!.content!.id = -1
-                } else {
-                    // Support conflicting alarm package (which start with 'alarm-id')
-                    if(notificationId.starts(with: "alarm")) {
-                        notificationModel!.content!.id = Int(notificationId.components(separatedBy: "-").last ?? "" ) ?? -1
-                    }
- 
-                }
+                notificationModel!.content!.id = -1
+                
                 notificationModel!.content!.title = title
                 notificationModel!.content!.body = body
                 
