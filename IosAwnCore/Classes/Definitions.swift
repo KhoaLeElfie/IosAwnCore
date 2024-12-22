@@ -14,6 +14,7 @@ public enum Definitions {
     public static let  MEDIA_VALID_FILE = "^file:\\/\\/"
     public static let  MEDIA_VALID_ASSET = "^asset:\\/\\/"
     public static let  MEDIA_VALID_RESOURCE = "^resource:\\/\\/"
+    public static let  MEDIA_VALID_LIBRARY = "^library:\\/\\/"
     
     public static let  DEFAULT_CATEGORY_IDENTIFIER = "DEFAULT"
 

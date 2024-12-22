@@ -32,6 +32,10 @@ open class MediaUtils {
             if (matchMediaType(regex:Definitions.MEDIA_VALID_RESOURCE, mediaPath:mediaPath)) {
                 return MediaSource.Resource;
             }
+            
+            if (matchMediaType(regex:Definitions.MEDIA_VALID_LIBRARY, mediaPath:mediaPath)) {
+                return MediaSource.Library;
+            }
 
             if (matchMediaType(regex:Definitions.MEDIA_VALID_ASSET, mediaPath:mediaPath)) {
                 return MediaSource.Asset;
@@ -51,7 +55,8 @@ open class MediaUtils {
                 cleanMedia.replaceRegex(Definitions.MEDIA_VALID_NETWORK, replaceWith: "$2") ||
                 cleanMedia.replaceRegex(Definitions.MEDIA_VALID_FILE, replaceWith: "") ||
                 cleanMedia.replaceRegex(Definitions.MEDIA_VALID_ASSET, replaceWith: "") ||
-                cleanMedia.replaceRegex(Definitions.MEDIA_VALID_RESOURCE, replaceWith: "")
+                cleanMedia.replaceRegex(Definitions.MEDIA_VALID_RESOURCE, replaceWith: "") ||
+                cleanMedia.replaceRegex(Definitions.MEDIA_VALID_LIBRARY, replaceWith: "")
             ){
                 return cleanMedia;
             }

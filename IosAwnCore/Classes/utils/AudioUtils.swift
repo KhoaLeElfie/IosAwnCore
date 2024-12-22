@@ -30,52 +30,63 @@ open class AudioUtils: MediaUtils {
         if(StringUtils.shared.isNullOrEmpty(SoundPath)){ return nil }
         
         switch(getMediaSourceType(mediaPath: SoundPath)){
-                
-            case .Resource:
-                return getSoundFromResource(SoundPath ?? "")
-                
-            case .Asset:
-                return getSoundFromAsset(SoundPath ?? "")
-                
-            case .File:
-                return getSoundFromFile(SoundPath ?? "")
-                
-            case .Network:
-                return getSoundFromUrl(SoundPath ?? "")
-                
-            case .Unknown:
-                return nil
+            
+        case .Resource:
+            return getSoundFromResource(SoundPath ?? "")
+            
+        case .Library
+            return getSoundFromLibrary(SoundPath ?? "")
+            
+            
+            
+        case .Asset:
+            return getSoundFromAsset(SoundPath ?? "")
+            
+        case .File:
+            return getSoundFromFile(SoundPath ?? "")
+            
+        case .Network:
+            return getSoundFromUrl(SoundPath ?? "")
+            
+        case .Unknown:
+            return nil
         }
     }
     
     open func cleanMediaPath(_ mediaPath:String?) -> String? {
-         if(mediaPath != nil){
-             var mediaPath = mediaPath
-             
+        if(mediaPath != nil){
+            var mediaPath = mediaPath
+            
             if(mediaPath!.matches("^https?:\\/\\/")){
-                 return mediaPath
-             }
-             else
-             if(mediaPath!.matches("^(asset:\\/\\/)(.*)")){
-                 if mediaPath!.replaceRegex("^(asset:\\/\\/)(.*)", replaceWith: "$2") {
-                     return mediaPath
-                 }
-             }
-             else
-             if(mediaPath!.matches("^(file:\\/\\/)(.*)")){
-                 if mediaPath!.replaceRegex("^(file:\\/\\/)(.*)", replaceWith: "$2") {
-                     return mediaPath
-                 }
-             }
-             else
-             if(mediaPath!.matches("^(resource:\\/\\/)(.*)")){
-                 if mediaPath!.replaceRegex("^(resource:\\/\\/)(.*)", replaceWith: "$2") {
-                     return mediaPath
-                 }
-             }
-             
-         }
-         return nil
+                return mediaPath
+            }
+            else
+            if(mediaPath!.matches("^(asset:\\/\\/)(.*)")){
+                if mediaPath!.replaceRegex("^(asset:\\/\\/)(.*)", replaceWith: "$2") {
+                    return mediaPath
+                }
+            }
+            else
+            if(mediaPath!.matches("^(file:\\/\\/)(.*)")){
+                if mediaPath!.replaceRegex("^(file:\\/\\/)(.*)", replaceWith: "$2") {
+                    return mediaPath
+                }
+            }
+            else
+            if(mediaPath!.matches("^(resource:\\/\\/)(.*)")){
+                if mediaPath!.replaceRegex("^(resource:\\/\\/)(.*)", replaceWith: "$2") {
+                    return mediaPath
+                }
+            }
+            else
+            if (mediaPath!.matches("^(library:\\/\\/)(.*)")) {
+                if mediaPath!.replaceRegex("^(library:\\/\\/)(.*)", replaceWith: "$2") {
+                    return mediaPath
+                }
+                
+            }
+        }
+        return nil
     }
     
     open func getSoundFromUrl(_ SoundUri:String) -> UNNotificationSound? {
@@ -112,6 +123,21 @@ open class AudioUtils: MediaUtils {
     
     open func getSoundFromAsset(_ mediaPath:String) -> UNNotificationSound? {
         return nil
+    }
+    
+    open func getSoundFromLibrary(_ mediaPath:String) -> UNNotificationSound? {
+        let mediaPath:String? = cleanMediaPath(mediaPath)
+        do {
+            
+            if FileManager.default.fileExists(atPath: mediaPath) {
+                return UNNotificationSound(named: UNNotificationSoundName(rawValue: mediaPath))
+            }
+            
+            return UNNotificationSound.default
+        } catch let error {
+            Logger.shared.e("AudioUtils", error)
+            return UNNotificationSound.default
+        }
     }
     
     open func getSoundFromResource(_ mediaPath:String) -> UNNotificationSound? {
