@@ -34,7 +34,7 @@ open class AudioUtils: MediaUtils {
         case .Resource:
             return getSoundFromResource(SoundPath ?? "")
             
-        case .Library
+        case .Library:
             return getSoundFromLibrary(SoundPath ?? "")
             
             
@@ -126,18 +126,15 @@ open class AudioUtils: MediaUtils {
     }
     
     open func getSoundFromLibrary(_ mediaPath:String) -> UNNotificationSound? {
-        let mediaPath:String? = cleanMediaPath(mediaPath)
-        do {
-            
-            if FileManager.default.fileExists(atPath: mediaPath) {
-                return UNNotificationSound(named: UNNotificationSoundName(rawValue: mediaPath))
-            }
-            
-            return UNNotificationSound.default
-        } catch let error {
-            Logger.shared.e("AudioUtils", error)
-            return UNNotificationSound.default
+        guard let mediaPath = cleanMediaPath(mediaPath) else { return UNNotificationSound.default }
+        
+        
+        if FileManager.default.fileExists(atPath: mediaPath) {
+            return UNNotificationSound(named: UNNotificationSoundName(rawValue: mediaPath))
         }
+        
+        return UNNotificationSound.default
+        
     }
     
     open func getSoundFromResource(_ mediaPath:String) -> UNNotificationSound? {
