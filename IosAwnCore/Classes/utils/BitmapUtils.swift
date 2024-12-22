@@ -42,6 +42,8 @@ open class BitmapUtils : MediaUtils {
             case .Network:
             resultedImage = getBitmapFromUrl(bitmapPath ?? "")
                 
+            case .Library:
+                    resultedImage = nil   
             case .Unknown:
             resultedImage = nil
         }

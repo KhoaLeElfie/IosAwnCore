@@ -129,7 +129,8 @@ open class AudioUtils: MediaUtils {
         guard let mediaPath = cleanMediaPath(mediaPath) else { return UNNotificationSound.default }
         
         
-        if FileManager.default.fileExists(atPath: mediaPath) {
+        if let libraryPath = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true).first,
+           FileManager.default.fileExists(atPath: libraryPath + "/Sounds/" + mediaPath) {
             return UNNotificationSound(named: UNNotificationSoundName(rawValue: mediaPath))
         }
         
