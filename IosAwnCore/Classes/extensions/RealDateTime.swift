@@ -93,8 +93,7 @@ public class RealDateTime: Equatable, Comparable, CustomStringConvertible {
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = timeZone ?? TimeZone.current
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-
-        let date = dateFormatter.date(from: safeDateTime)
+        guard let date = dateFormatter.date(from: safeDateTime) else { return nil }
         return date
     }
     

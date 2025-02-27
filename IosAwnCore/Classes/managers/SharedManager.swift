@@ -22,10 +22,18 @@ public class SharedManager {
     private let TAG:String = "SharedManager"
     
     private func refreshObjects(){
-        objectList = _userDefaults!.dictionary(forKey: tag) ?? [:]
-    }
+         guard let userDefaults = _userDefaults else {
+            print("UserDefaults not available")
+            return
+        }
+        objectList = userDefaults.dictionary(forKey: tag) ?? [:]
+     }
     
     private func updateObjects(){
+        guard let userDefaults = _userDefaults else {
+            print("UserDefaults not available")
+            return
+        }
         _userDefaults!.removeObject(forKey: tag)
         _userDefaults!.setValue(objectList, forKey: tag)
         refreshObjects()
@@ -39,7 +47,9 @@ public class SharedManager {
     public func set(_ data:[String:Any?]?, referenceKey:String) {
         refreshObjects()
         if(StringUtils.shared.isNullOrEmpty(referenceKey) || data == nil){ return }
-        objectList[referenceKey] = data!
+        if let unwrappedData = data {
+            objectList[referenceKey] = unwrappedData
+        }
         updateObjects()
     }
     
@@ -47,7 +57,9 @@ public class SharedManager {
         refreshObjects()
         if(StringUtils.shared.isNullOrEmpty(referenceKey)){ return false }
         
-        objectList.removeValue(forKey: referenceKey)
+        if let _ = objectList[referenceKey] {
+            objectList.removeValue(forKey: referenceKey)
+        }
         updateObjects()
         return true
     }
@@ -62,10 +74,11 @@ public class SharedManager {
         refreshObjects()
         var returnedList:[[String:Any?]] = []
         
-        for (key, data) in objectList {
-            if !key.starts(with: keyFragment) { continue }
-            if let dictionary:[String:Any?] = data as? [String:Any?] {
-                returnedList.append( dictionary )
+        for (_, data) in objectList {
+            if let dictionary = data as? [String:Any?] {
+                // Create a new dictionary to avoid memory alignment issues
+                let safeDictionary = dictionary.mapValues { $0 }
+                returnedList.append(safeDictionary)
             }
         }
         
