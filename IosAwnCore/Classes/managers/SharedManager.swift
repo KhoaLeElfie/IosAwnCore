@@ -34,8 +34,8 @@ public class SharedManager {
             print("UserDefaults not available")
             return
         }
-        _userDefaults!.removeObject(forKey: tag)
-        _userDefaults!.setValue(objectList, forKey: tag)
+        userDefaults.removeObject(forKey: tag)
+        userDefaults.setValue(objectList, forKey: tag)
         refreshObjects()
     }
     
